@@ -2,10 +2,13 @@ name: Liveboat feed build
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
   push:
-      tags:
-        - 'build*'
+      branches: [master]
+      paths-ignore:
+        - "docs/**"
+        - "cache.db"
 
 jobs:
   liveboat-feed-build:
@@ -63,7 +66,7 @@ jobs:
         run: newsboat -u config/urls -C config/newsboat-config -c cache.db -x reload
 
       - name: Run liveboat
-        run: ./bin/liveboat --template-path templates/default --config-file config/liveboat-config.toml
+        run: ./bin/liveboat --template-path templates/custom --config-file config/liveboat-config.toml
 
       - name: Truncate database
         run: |
